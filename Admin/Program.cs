@@ -11,7 +11,6 @@ var configuration = new ConfigurationBuilder()
     .AddJsonFile("appsettings.json")
     .Build();
 
-// Registre os controladores e o Swagger
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Serviço de Mídia", Version = "v1" });
@@ -28,7 +27,16 @@ string mySqlConnection = configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<DataContext>(options =>
     options.UseNpgsql(mySqlConnection));
 
+builder.Services.AddCors(options => {
+    options.AddPolicy("AllowAll",
+        builder => builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader());
+});
+
 var app = builder.Build();
+
+app.UseCors("AllowAll");
 
 if (app.Environment.IsDevelopment())
 {

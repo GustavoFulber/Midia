@@ -61,6 +61,56 @@ namespace Admin.Migrations
 
                     b.ToTable("arquivo", "arquivos");
                 });
+
+            modelBuilder.Entity("ArquivoUsuario", b =>
+                {
+                    b.Property<int>("ArquivosArquivoId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UsuarioId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("ArquivosArquivoId", "UsuarioId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("ArquivoUsuario", "arquivos");
+                });
+
+            modelBuilder.Entity("Usuario", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Codigo")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Deletado")
+                        .HasColumnType("boolean");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("usuario", "arquivos");
+                });
+
+            modelBuilder.Entity("ArquivoUsuario", b =>
+                {
+                    b.HasOne("Arquivo", null)
+                        .WithMany()
+                        .HasForeignKey("ArquivosArquivoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Usuario", null)
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
 #pragma warning restore 612, 618
         }
     }

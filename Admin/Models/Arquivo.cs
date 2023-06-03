@@ -22,6 +22,8 @@ public class Arquivo
 
     public DateTime DataAtualizacao { get; set; }
 
+    public ICollection<Usuario>? Usuario { get; set; }
+
     public bool Deletado { get; set; }
 
     public Arquivo(int arquivoId, string nome, byte[] dado, string tipo, string url, DateTime dataCriacao, DateTime dataAtualizacao, bool deletado)
