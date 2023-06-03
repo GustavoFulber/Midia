@@ -197,6 +197,38 @@ namespace Admin.Controllers
             return Ok();
         }
 
+        [Route("compartilharArquivo/{url}/{codigo}")]
+        [HttpPost]
+        public async Task<IActionResult> CompartilharArquivo(string url, string codigo)
+        {
+            // Busca o arquivo com base na URL fornecida
+            var arquivo = await _contexto.Arquivo.FirstOrDefaultAsync(a => a.Url == url);
+
+            if (arquivo == null)
+            {
+                return NotFound("Arquivo não encontrado");
+            }
+
+            var usuario = await _contexto.Usuario.FirstOrDefaultAsync(u => u.Codigo == codigo);
+
+            if (usuario == null)
+            {
+                return NotFound("Usuário não encontrado");
+            }
+
+            if (usuario.Arquivos == null)
+            {
+                usuario.Arquivos = new List<Arquivo>();
+            }
+
+            usuario.Arquivos.Add(arquivo);
+
+            _contexto.Usuario.Update(usuario);
+            await _contexto.SaveChangesAsync();
+
+            return Ok();
+        }
+
         [Route("editarArquivo/{url}/{codigo}")]
         [HttpPut]
         public async Task<IActionResult> EditarArquivoUrl(string codigo, string url, IFormFile arquivo)
