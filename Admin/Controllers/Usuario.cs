@@ -44,10 +44,10 @@ namespace Admin.Controllers
 
             if (!usuarioExistente)
             {
-                return NotFound("Nenhum usuário encontrado com este código");
+                return Ok(false);
             }
 
-            return Ok();
+            return Ok(true);
         }
     }
 }

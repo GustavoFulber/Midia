@@ -132,7 +132,7 @@ namespace Admin.Controllers
 
             if (usuario == null)
             {
-                return NotFound("Usuárop não encontrado");
+                return NotFound("Usuário não encontrado");
             }
 
             var fileName = Path.GetFileNameWithoutExtension(file.FileName);
@@ -176,9 +176,9 @@ namespace Admin.Controllers
 
             if (string.IsNullOrEmpty(codigo)) { return BadRequest("Código não inserido!"); }
 
-            var registroArquivo = await _contexto.Arquivo.FirstOrDefaultAsync(x => x.Url == url);
+            var registroArquivo = await _contexto.Arquivo.Include(x => x.Usuario).FirstOrDefaultAsync(x => x.Url == url);
 
-            if (registroArquivo == null)
+            if (registroArquivo == null || registroArquivo.Usuario == null)
             {
                 return NotFound();
             }
@@ -202,7 +202,7 @@ namespace Admin.Controllers
         public async Task<IActionResult> CompartilharArquivo(string url, string codigo)
         {
             // Busca o arquivo com base na URL fornecida
-            var arquivo = await _contexto.Arquivo.FirstOrDefaultAsync(a => a.Url == url);
+            var arquivo = await _contexto.Arquivo.Include(x => x.Usuario).FirstOrDefaultAsync(a => a.Url == url);
 
             if (arquivo == null)
             {
@@ -235,11 +235,11 @@ namespace Admin.Controllers
         {
             if (string.IsNullOrEmpty(codigo)) { return BadRequest("Código não inserido!"); }
 
-            var registroArquivo = await _contexto.Arquivo.FirstOrDefaultAsync(x => x.Url == url);
+            var registroArquivo = await _contexto.Arquivo.Include(x => x.Usuario).FirstOrDefaultAsync(x => x.Url == url);
 
-            if (registroArquivo == null)
+            if (registroArquivo == null || registroArquivo.Usuario == null)
             {
-                return NotFound();
+                return NotFound("Arquivo não encontrado");
             }
 
             if (!registroArquivo.Usuario.Any(u => u.Codigo == codigo))
@@ -269,7 +269,7 @@ namespace Admin.Controllers
         {
             if (string.IsNullOrEmpty(codigo)) { return BadRequest("Código não inserido!"); }
 
-            var arquivo = await _contexto.Arquivo.FirstOrDefaultAsync(x => x.Url == url);
+            var arquivo = await _contexto.Arquivo.Include(x => x.Usuario).FirstOrDefaultAsync(x => x.Url == url);
 
             if (arquivo == null)
             {
@@ -325,7 +325,9 @@ namespace Admin.Controllers
         {
             if (string.IsNullOrEmpty(codigo)) { return BadRequest("Código não inserido!"); }
 
-            var arquivo = await _contexto.Arquivo.FirstOrDefaultAsync(x => x.Url == url);
+            var arquivo = await _contexto.Arquivo.Include(x => x.Usuario).FirstOrDefaultAsync(x => x.Url == url);
+
+            Console.WriteLine(arquivo);
 
             if (arquivo == null)
             {
@@ -355,9 +357,9 @@ namespace Admin.Controllers
         {
             if (string.IsNullOrEmpty(codigo)) { return BadRequest("Código não inserido!"); }
 
-            var arquivo = await _contexto.Arquivo.FirstOrDefaultAsync(a => a.Url == url);
+            var arquivo = await _contexto.Arquivo.Include(x => x.Usuario).FirstOrDefaultAsync(a => a.Url == url);
 
-            if (arquivo == null)
+            if (arquivo == null  || arquivo.Usuario == null)
             {
                 return NotFound("Arquivo não encontrado");
             }
