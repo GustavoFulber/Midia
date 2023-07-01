@@ -95,7 +95,7 @@ namespace Admin.Controllers
             } while (await _contexto.Arquivo.AnyAsync(x => x.Url == uniqueUrl));
 
             var fileRecord = new Arquivo(
-                    fileName,
+                    fileName + fileExtension,
                     fileBytes,
                     fileContentType,
                     uniqueUrl,
@@ -180,7 +180,7 @@ namespace Admin.Controllers
 
             if (registroArquivo == null || registroArquivo.Usuario == null)
             {
-                return NotFound();
+                return NotFound("Não encontrado");
             }
 
             if (!registroArquivo.Usuario.Any(u => u.Codigo == codigo))
@@ -299,7 +299,7 @@ namespace Admin.Controllers
         {
             if (string.IsNullOrEmpty(codigo)) { return BadRequest("Código não inserido!"); }
 
-            var arquivo = await _contexto.Arquivo.FirstOrDefaultAsync(x => x.Url == url);
+            var arquivo = await _contexto.Arquivo.Include(x => x.Usuario).FirstOrDefaultAsync(x => x.Url == url);
 
             if (arquivo == null)
             {
